@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendify - Courses</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .course-container {
+            width: 600px;
+            padding: 16px;
+            background-color: white;
+            margin: 0 auto;
+            margin-top: 50px;
+            border: 2px solid black;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .course-title {
+            font-size: 1.5rem;
+            margin-top: 1;
+            text-align: left;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-top: 50px;
+        }
+
+        .course-details {
+            font-size: 0.9rem;
+            color: gray;
+            margin-top: 5px;
+        }
+
+        .attend-button {
+            background-color: #cdc086;
+            color: white;
+            padding: 6px 12px;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Courses</h1>
+    <div class="course-container">
+        <a class="course-title" href="course_details.html">Introduction to Programming</a>
+        <div class="course-details">
+            <span>Timing: 10:00 AM - 11:30 AM</span>
+        </div>
+        <button class="attend-button" onclick="changeButtonTextAndRemove(this,'https://api.apispreadsheets.com/data/7KNj4zV51l11W7oo/')">Attend</button>
+    </div>
+    <div class="course-container">
+        <a class="course-title" href="course_details.html">Network Security Fundamentals</a>
+        <div class="course-details">
+            <span>Timing: 1:00 PM - 2:30 PM</span>
+        </div>
+        <button class="attend-button" onclick="changeButtonTextAndRemove(this,'https://api.apispreadsheets.com/data/GzpLbLx0f1tNmrRN/')">Attend</button>
+    </div>
+    <div class="course-container">
+        <a class="course-title" href="course_details.html">Calculus 1</a>
+        <div class="course-details">
+            <span>Timing: 3:00 PM - 4:30 PM</span>
+        </div>
+        <button class="attend-button" onclick="changeButtonTextAndRemove(this,'https://api.apispreadsheets.com/data/DTXrPGfMjW2GS6aX/')">Attend</button>
+    </div>
+
+    <script>
+        function changeButtonTextAndRemove(button, fetchLink) {
+            button.innerText = "I have attended the Class";
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username');
+
+            const currentDate = new Date();
+
+            // Convert day to string representation
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const day = daysOfWeek[currentDate.getDay()];
+
+            // Convert time to string representation
+            const hours = String(currentDate.getHours()).padStart(2, '0');
+            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+            const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+            const time = `${hours}:${minutes}:${seconds}`;
+
+            fetch(fetchLink, {
+                method: "POST",
+                body: JSON.stringify({
+                    "data": {
+                        "Day": day,
+                        "Time": time,
+                        "User Name": username,
+                        "Course Attended": button.previousElementSibling.innerText.trim()
+                    }
+                }),
+            }).then(res => {
+                if (res.status === 201) {
+                    // SUCCESS
+                } else {
+                    // ERROR
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

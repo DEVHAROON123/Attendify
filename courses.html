@@ -77,44 +77,50 @@
         <button class="attend-button" onclick="changeButtonTextAndRemove(this,'https://api.apispreadsheets.com/data/DTXrPGfMjW2GS6aX/')">Attend</button>
     </div>
 
-    <script>
-        function changeButtonTextAndRemove(button, fetchLink) {
-            button.innerText = "I have attended the Class";
+   <script>
+    function changeButtonTextAndRemove(button, fetchLink) {
+        button.innerText = "I have attended the Class";
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const username = urlParams.get('username');
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
 
-            const currentDate = new Date();
+        const currentDate = new Date();
 
-            // Convert day to string representation
-            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const day = daysOfWeek[currentDate.getDay()];
+        // Convert day to string representation
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const day = daysOfWeek[currentDate.getDay()];
 
-            // Convert time to string representation
-            const hours = String(currentDate.getHours()).padStart(2, '0');
-            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-            const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-            const time = `${hours}:${minutes}:${seconds}`;
-
-            fetch(fetchLink, {
-                method: "POST",
-                body: JSON.stringify({
-                    "data": {
-                        "Day": day,
-                        "Time": time,
-                        "User Name": username,
-                        "Course Attended": button.previousElementSibling.innerText.trim()
-                    }
-                }),
-            }).then(res => {
-                if (res.status === 201) {
-                    // SUCCESS
-                } else {
-                    // ERROR
-                }
-            });
+        // Convert time to string representation
+        let hours = currentDate.getHours();
+        const isPM = hours >= 12;
+        if (isPM) {
+            hours -= 12;
         }
-    </script>
+        hours = String(hours).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+        const time = `${hours}:${minutes}:${seconds} ${isPM ? 'PM' : 'AM'}`;
+
+        fetch(fetchLink, {
+            method: "POST",
+            body: JSON.stringify({
+                "data": {
+                    "Day": day,
+                    "Time": time,
+                    "User Name": username,
+                    "Course Attended": button.previousElementSibling.innerText.trim()
+                }
+            }),
+        }).then(res => {
+            if (res.status === 201) {
+                // SUCCESS
+            } else {
+                // ERROR
+            }
+        });
+    }
+</script>
+
 </body>
 
 </html>
